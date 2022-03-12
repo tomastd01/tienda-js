@@ -1,3 +1,4 @@
+// Carga el cart del localStorage al recargar la pagina.
 window.onload = function() {
     const storage = JSON.parse(localStorage.getItem("cart"));
     if (storage) {
@@ -32,6 +33,7 @@ function showShirtItem (products) {
                 <div class="card-body">
                     <h3 class="card-text card-precio">${product.price}</h3>
                     <p class="card-title">${product.name}</p>
+                    <span class="d-none card-id">${product.id}</span>
                     <button href="#" class="btn btn-primary add-btn">Agregar al carrito</button>
                 </div>
             </div>
@@ -46,20 +48,24 @@ let renderdCart = document.querySelector(".cart");
 
 const addButtons = document.querySelectorAll(".add-btn");
 addButtons.forEach(addButton => {
-    addButton.addEventListener("click", clickButton)
+    addButton.addEventListener("click", AddButton)
 })
 
-let buyButton = document.querySelector(".buy-btn");
-buyButton.addEventListener("click", buyCart)
-
-function clickButton(e) {
+function AddButton(e) {
     let button = e.target;
     let element = button.closest(".card");
+    let elementId = element.querySelector(".card-id").textContent;
     let elementTitle = element.querySelector(".card-title").innerText;
     let elementPrice = element.querySelector(".card-precio").innerText;
     let elementImg = element.querySelector(".card-img-top").src;
+    
+    newItem(Number(elementId),elementTitle,elementPrice,elementImg)
+}
 
+// Crea un nuevo objeto por cada producto clickeado.
+function newItem(elementId,elementTitle,elementPrice,elementImg) {
     const newItem = {
+        id: elementId,
         title: elementTitle,
         price: elementPrice,
         img: elementImg,
@@ -69,13 +75,14 @@ function clickButton(e) {
     addToCart(newItem);
 }
 
+//Añade el objeto al carro. Si en el carro ya existe un objeto con el mismo ID, aumenta la cantidad.
 function addToCart(newItem) {
 
     let quantityInputs = document.querySelectorAll(".quantity__input");
 
     for(let i=0; i< cart.length; i++) {
-        if(cart[i].title.trim() === newItem.title.trim()){
-            cart[i].cantidad ++;
+        if(cart[i].id === newItem.id){
+            cart[i].cantidad++;
             let inputValue = quantityInputs[i]
             inputValue.value++;
             return null
@@ -87,6 +94,7 @@ function addToCart(newItem) {
     addCart()
 }
 
+// Renderiza los objetos en que estan en el carrito.
 function addCart() {
     renderdCart.innerHTML = '';
     cart.map (item => {
@@ -96,6 +104,7 @@ function addCart() {
         let newPanelContent = `<div class="cart__panel py-2 d-flex align-items-center"> 
         <div class="item d-flex justify-content-between align-items-center">
             <div class="item__picture mx-3">
+            <span class="d-none item__id">${item.id}</span>
                 <img class="item__img" src="${item.img}" alt="">
             </div>
             <div class="item__info d-flex justify-content-between align-items-center">
@@ -127,6 +136,7 @@ function addCart() {
     updateTotalPrice();
 }
 
+// Calcula el precio total dependiendo del precio y cantidad de camisetas que tenga el cart.
 function updateTotalPrice() {
     let totalPrice = 0;
     let cartTotalPrice = document.querySelector(".total-price");
@@ -137,15 +147,17 @@ function updateTotalPrice() {
     })
 
     cartTotalPrice.innerHTML = `$ ${totalPrice}`;
+
     saveLocalStorage()
 }
 
+// Elimina el item del carrito al clickear el delete-button y recalcula el total.
 function deleteItem(e) {
     let deleteBtn = e.target;
-    const cartItem = deleteBtn.closest(".item");
-    const itemTitle = cartItem.querySelector(".item__title").innerText;
+    const cartItem = deleteBtn.closest(".cart__panel");
+    const itemId = cartItem.querySelector(".item__id").textContent;
     for(let i=0; i < cart.length; i++) {
-        if(cart[i].title.trim() === itemTitle.trim()){
+        if(cart[i].id == itemId){
             cart.splice(i, 1)
         }
     }
@@ -154,12 +166,14 @@ function deleteItem(e) {
     updateTotalPrice()
 }
 
+// Cambia la cantidad de camisetas al subir el numero con en el input.
 function changeQuantity(e) {
     let quantityInput = e.target;
     const cartItem = quantityInput.closest(".item");
-    const itemTitle = cartItem.querySelector(".item__title").innerText;
+    const itemId = cartItem.querySelector(".item__id").textContent;
     cart.forEach(item => {
-        if(item.title.trim() === itemTitle) {
+        if(item.id == itemId) {
+            // Ternary para que el valor del input no sea menor de 1.
             quantityInput.value < 1 ? (quantityInput.value = 1) : quantityInput.value;
             item.quantity = quantityInput.value;
 
@@ -169,14 +183,6 @@ function changeQuantity(e) {
 
 }
 
-function buyCart() {
-    renderdCart.innerHTML = ""
-    updateTotalPrice()
-}
-
 function saveLocalStorage() {
     localStorage.setItem("cart",JSON.stringify(cart))
 }
-
-
-
