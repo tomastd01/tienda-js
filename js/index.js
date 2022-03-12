@@ -28,13 +28,13 @@ function showShirtItem (products) {
     let newCard = document.querySelector("#contenedor");
     products.forEach(product => {
         newCard.innerHTML += `<div class="col">
-            <div class="card" style="width: 18rem;">
-                <img src="${product.img}" class="card-img-top" alt="...">
+            <div class="card radius-0 border-0" style="width: 18rem;">
+                <img src="${product.img}" class="card-img-top radius-0" alt="...">
                 <div class="card-body">
-                    <h3 class="card-text card-precio">${product.price}</h3>
+                    <h5 class="card-text card-precio">${product.price}</h5>
                     <p class="card-title">${product.name}</p>
                     <span class="d-none card-id">${product.id}</span>
-                    <button href="#" class="btn btn-primary add-btn">Agregar al carrito</button>
+                    <button href="#" class="btn btn-outline-primary add-btn radius-0">Agregar al carrito</button>
                 </div>
             </div>
         </div>`
@@ -117,7 +117,7 @@ function addCart() {
                 </div>
             </div>
             <div class="btn-wrapper p-3">
-                <button class="item__delete-btn d-flex justify-content-center align-items-center">x</button>
+                <button class="item__delete-btn btn-outline-danger d-flex justify-content-center align-items-center p-0">X</button>
             </div>
         </div>
         </div>`
