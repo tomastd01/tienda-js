@@ -1,29 +1,29 @@
-class Camiseta {
-    constructor(id, nombre, precio, img) {
+class Shirt {
+    constructor(id, name, price, img) {
         this.id = id;
-        this.nombre = nombre;
-        this.precio = precio;
+        this.name = name;
+        this.price = price;
         this.img = img;
     }
 }
 
-let productos = []
-productos.push(new Camiseta(1, "Boca Juniors Titular 21/22", 8000, "./images/boca.jpg"));
-productos.push(new Camiseta(2, "Boca Juniors Visitante 21/22", 8000, "./images/boca2.jpg"));
-productos.push(new Camiseta(3, "River Plate Titular 21/22", 8000, "./images/river.webp"));
-productos.push(new Camiseta(4, "River Plate Tercera 20/21", 5000, "./images/river2.jpg"));
-productos.push(new Camiseta(5, "Argentina Titular", 10000, "./images/argentina1.jpg"))
-productos.push(new Camiseta(6, "Argentina Visitante", 9000, "./images/argentina2.jpg"));
+let products = []
+products.push(new Shirt(1, "Boca Juniors Titular 21/22", 10999, "./images/boca.jpg"));
+products.push(new Shirt(2, "Boca Juniors Visitante 21/22", 9999, "./images/boca2.jpg"));
+products.push(new Shirt(3, "River Plate Titular 21/22", 10999, "./images/river.webp"));
+products.push(new Shirt(4, "River Plate Visitante 21/22", 10999, "./images/river2.jpg"));
+products.push(new Shirt(5, "Argentina Titular 2021", 10999, "./images/argentina1.jpg"))
+products.push(new Shirt(6, "Argentina Visitante 2021", 9999, "./images/argentina2.jpg"));
 
-function mostrarCamiseta (productos) {
-    let nuevaCard = document.querySelector("#contenedor");
-    productos.forEach(producto => {
-        nuevaCard.innerHTML += `<div class="col">
+function showShirtItem (products) {
+    let newCard = document.querySelector("#contenedor");
+    products.forEach(product => {
+        newCard.innerHTML += `<div class="col">
             <div class="card" style="width: 18rem;">
-                <img src="${producto.img}" class="card-img-top" alt="...">
+                <img src="${product.img}" class="card-img-top" alt="...">
                 <div class="card-body">
-                    <h3 class="card-text card-precio">${producto.precio}</h3>
-                    <p class="card-title">${producto.nombre}</p>
+                    <h3 class="card-text card-precio">${product.price}</h3>
+                    <p class="card-title">${product.name}</p>
                     <button href="#" class="btn btn-primary add-btn">Agregar al carrito</button>
                 </div>
             </div>
@@ -31,20 +31,21 @@ function mostrarCamiseta (productos) {
     })
 }
 
-mostrarCamiseta(productos);
-
-// ----------------------------------------------------
+showShirtItem(products);
 
 const addButtons = document.querySelectorAll(".add-btn");
 addButtons.forEach(addButton => {
     addButton.addEventListener("click", clickButton)
 })
 
+let buyButton = document.querySelector(".buy-btn");
+buyButton.addEventListener("click", buyCart)
+
 let cart = document.querySelector("#cart");
 
-function clickButton(event) {
-    let btn = event.target;
-    let element = btn.closest(".card");
+function clickButton(e) {
+    let button = e.target;
+    let element = button.closest(".card");
     let elementTitle = element.querySelector(".card-title").innerText;
     let elementPrice = element.querySelector(".card-precio").innerText;
     let elementImg = element.querySelector(".card-img-top").src;
@@ -76,7 +77,11 @@ function addToCart(elementTitle,elementPrice,elementImg) {
     cartPanelRow.innerHTML = newPanelContent;
     cart.append(cartPanelRow);
 
-    updateTotalPrice()
+    cartPanelRow.querySelector(".item__delete-btn").addEventListener("click", deleteItem);
+
+    cartPanelRow.querySelector(".quantity__input").addEventListener("change", changeQuantity);
+
+    updateTotalPrice();
 }
 
 function updateTotalPrice() {
@@ -95,4 +100,30 @@ function updateTotalPrice() {
     })
 
     cartTotalPrice.innerHTML = `$ ${totalPrice}`;
+
 }
+
+function deleteItem(e) {
+    let btn = e.target;
+    btn.closest(".cart__panel").remove();
+
+    updateTotalPrice()
+}
+
+function changeQuantity(e) {
+    let quantityInput = e.target;
+    if (quantityInput.value <= 0) {
+        quantityInput.value = 1
+    }
+
+    updateTotalPrice()
+}
+
+function buyCart() {
+    cart.innerHTML = ""
+    updateTotalPrice()
+}
+
+// ----------------------------------------------------
+
+
