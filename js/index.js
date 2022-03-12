@@ -1,3 +1,11 @@
+window.onload = function() {
+    const storage = JSON.parse(localStorage.getItem("cart"));
+    if (storage) {
+        cart = storage;
+        addCart()
+    }
+}
+
 class Shirt {
     constructor(id, name, price, img) {
         this.id = id;
@@ -33,6 +41,9 @@ function showShirtItem (products) {
 
 showShirtItem(products);
 
+let cart = [];
+let renderdCart = document.querySelector(".cart");
+
 const addButtons = document.querySelectorAll(".add-btn");
 addButtons.forEach(addButton => {
     addButton.addEventListener("click", clickButton)
@@ -41,8 +52,6 @@ addButtons.forEach(addButton => {
 let buyButton = document.querySelector(".buy-btn");
 buyButton.addEventListener("click", buyCart)
 
-let cart = document.querySelector("#cart");
-
 function clickButton(e) {
     let button = e.target;
     let element = button.closest(".card");
@@ -50,36 +59,70 @@ function clickButton(e) {
     let elementPrice = element.querySelector(".card-precio").innerText;
     let elementImg = element.querySelector(".card-img-top").src;
 
-    addToCart(elementTitle,elementPrice,elementImg);
+    const newItem = {
+        title: elementTitle,
+        price: elementPrice,
+        img: elementImg,
+        quantity: 1
+    }
+
+    addToCart(newItem);
 }
 
-function addToCart(elementTitle,elementPrice,elementImg) {
-    let cartPanelRow = document.createElement("div");
-    let newPanelContent = `<div class="cart__panel py-2 d-flex align-items-center"> 
-    <div class="item d-flex justify-content-between align-items-center">
-        <div class="item__picture mx-3">
-            <img class="item__img" src="${elementImg}" alt="">
-        </div>
-        <div class="item__info d-flex justify-content-between align-items-center">
-            <h5 class="item__title">${elementTitle}</h5>
-            <div class="item__quantity">
-                <input class="quantity__input" type="number" value="1">
-            </div>
-            <div class="item__price-container">
-                <span class="item__price price-font">${elementPrice}</span>
-            </div>
-        </div>
-        <div class="btn-wrapper p-3">
-            <button class="item__delete-btn d-flex justify-content-center align-items-center">x</button>
-        </div>
-    </div>
-    </div>`;
-    cartPanelRow.innerHTML = newPanelContent;
-    cart.append(cartPanelRow);
+function addToCart(newItem) {
 
-    cartPanelRow.querySelector(".item__delete-btn").addEventListener("click", deleteItem);
+    let quantityInputs = document.querySelectorAll(".quantity__input");
 
-    cartPanelRow.querySelector(".quantity__input").addEventListener("change", changeQuantity);
+    for(let i=0; i< cart.length; i++) {
+        if(cart[i].title.trim() === newItem.title.trim()){
+            cart[i].cantidad ++;
+            let inputValue = quantityInputs[i]
+            inputValue.value++;
+            return null
+        }
+    }
+
+    cart.push(newItem);
+
+    addCart()
+}
+
+function addCart() {
+    renderdCart.innerHTML = '';
+    cart.map (item => {
+        let cartPanelRow = document.createElement("div");
+        cartPanelRow.classList.add("CartItem")
+
+        let newPanelContent = `<div class="cart__panel py-2 d-flex align-items-center"> 
+        <div class="item d-flex justify-content-between align-items-center">
+            <div class="item__picture mx-3">
+                <img class="item__img" src="${item.img}" alt="">
+            </div>
+            <div class="item__info d-flex justify-content-between align-items-center">
+                <h5 class="item__title">${item.title}</h5>
+                <div class="item__quantity">
+                    <input class="quantity__input" type="number" value=${item.quantity}>
+                </div>
+                <div class="item__price-container">
+                    <span class="item__price price-font">${item.price}</span>
+                </div>
+            </div>
+            <div class="btn-wrapper p-3">
+                <button class="item__delete-btn d-flex justify-content-center align-items-center">x</button>
+            </div>
+        </div>
+        </div>`
+
+        cartPanelRow.innerHTML = newPanelContent;
+        renderdCart.append(cartPanelRow);
+
+
+        const deleteItemButton = cartPanelRow.querySelector(".item__delete-btn");
+        deleteItemButton.addEventListener("click", deleteItem);
+
+        const quantityInput = cartPanelRow.querySelector(".quantity__input");
+        quantityInput.addEventListener("change", changeQuantity);
+    })
 
     updateTotalPrice();
 }
@@ -87,43 +130,53 @@ function addToCart(elementTitle,elementPrice,elementImg) {
 function updateTotalPrice() {
     let totalPrice = 0;
     let cartTotalPrice = document.querySelector(".total-price");
-    const cartItems = document.querySelectorAll(".cart__panel");
 
-    cartItems.forEach(cartItem => {
-        let cartItemPrice = cartItem.querySelector(".item__price");
-        let cartItemPriceNumber = Number(cartItemPrice.innerText);
-
-        let cartItemQuantity = cartItem.querySelector(".quantity__input");
-        let cartItemQuantityNumber = Number(cartItemQuantity.value);
-
-        totalPrice = totalPrice + cartItemPriceNumber * cartItemQuantityNumber;
+    cart.forEach(item => {
+        let itemPrice = Number(item.price);
+        totalPrice = totalPrice + itemPrice * item.quantity;
     })
 
     cartTotalPrice.innerHTML = `$ ${totalPrice}`;
-
+    saveLocalStorage()
 }
 
 function deleteItem(e) {
-    let btn = e.target;
-    btn.closest(".cart__panel").remove();
+    let deleteBtn = e.target;
+    const cartItem = deleteBtn.closest(".item");
+    const itemTitle = cartItem.querySelector(".item__title").innerText;
+    for(let i=0; i < cart.length; i++) {
+        if(cart[i].title.trim() === itemTitle.trim()){
+            cart.splice(i, 1)
+        }
+    }
+    cartItem.remove();
 
     updateTotalPrice()
 }
 
 function changeQuantity(e) {
     let quantityInput = e.target;
-    if (quantityInput.value <= 0) {
-        quantityInput.value = 1
-    }
+    const cartItem = quantityInput.closest(".item");
+    const itemTitle = cartItem.querySelector(".item__title").innerText;
+    cart.forEach(item => {
+        if(item.title.trim() === itemTitle) {
+            quantityInput.value < 1 ? (quantityInput.value = 1) : quantityInput.value;
+            item.quantity = quantityInput.value;
 
-    updateTotalPrice()
+            updateTotalPrice()
+        }
+    })
+
 }
 
 function buyCart() {
-    cart.innerHTML = ""
+    renderdCart.innerHTML = ""
     updateTotalPrice()
 }
 
-// ----------------------------------------------------
+function saveLocalStorage() {
+    localStorage.setItem("cart",JSON.stringify(cart))
+}
+
 
 
