@@ -25,7 +25,9 @@ products.push(new Shirt(5, "Argentina Titular 2021", 10999, "./images/argentina1
 products.push(new Shirt(6, "Argentina Visitante 2021", 9999, "./images/argentina2.jpg"));
 
 function showShirtItem (products) {
+
     let newCard = document.querySelector("#contenedor");
+
     products.forEach(product => {
         newCard.innerHTML += `<div class="col">
             <div class="card radius-0 border-0" style="width: 18rem;">
@@ -52,6 +54,7 @@ addButtons.forEach(addButton => {
 })
 
 function AddButton(e) {
+    
     let button = e.target;
     let element = button.closest(".card");
     let elementId = element.querySelector(".card-id").textContent;
@@ -64,6 +67,7 @@ function AddButton(e) {
 
 // Crea un nuevo objeto por cada producto clickeado.
 function newItem(elementId,elementTitle,elementPrice,elementImg) {
+
     const newItem = {
         id: elementId,
         title: elementTitle,
@@ -97,7 +101,9 @@ function addToCart(newItem) {
 
 // Renderiza los objetos en que estan en el carrito.
 function addCart() {
+
     renderdCart.innerHTML = '';
+
     cart.map (item => {
         let cartPanelRow = document.createElement("div");
         cartPanelRow.classList.add("CartItem")
