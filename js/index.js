@@ -1,10 +1,8 @@
 // Carga el cart del localStorage al recargar la pagina.
+let cart;
 window.onload = () => {
-    const cartLocalStorage = JSON.parse(localStorage.getItem("cart"));
-    if (cartLocalStorage) {
-        cart = cartLocalStorage;
-        addCart()
-    }
+    cart = JSON.parse(localStorage.getItem("cart")) || [];
+    showCartItems()
 }
 
 class Shirt {
@@ -29,13 +27,14 @@ function showShirtItem (products) {
     let newCard = document.querySelector("#contenedor");
 
     products.forEach(product => {
+        const {id, name, img, price} = product;
         newCard.innerHTML += `<div class="col">
             <div class="card radius-0 border-0" style="width: 18rem;">
-                <img src="${product.img}" class="card-img-top radius-0" alt="...">
+                <img src="${img}" class="card-img-top radius-0" alt="...">
                 <div class="card-body">
-                    <h5 class="card-text card-precio">${product.price}</h5>
-                    <p class="card-title">${product.name}</p>
-                    <span class="d-none card-id">${product.id}</span>
+                    <h5 class="card-text card-precio">${price}</h5>
+                    <p class="card-title">${name}</p>
+                    <span class="d-none card-id">${id}</span>
                     <button href="#" class="btn btn-outline-primary add-btn radius-0">Agregar al carrito</button>
                 </div>
             </div>
@@ -45,7 +44,6 @@ function showShirtItem (products) {
 
 showShirtItem(products);
 
-let cart = [];
 let renderdCart = document.querySelector(".cart");
 
 const addButtons = document.querySelectorAll(".add-btn");
@@ -80,47 +78,49 @@ function newItem(elementId,elementTitle,elementPrice,elementImg) {
 }
 
 //Añade el objeto al carro. Si en el carro ya existe un objeto con el mismo ID, aumenta la cantidad.
-function addToCart(newItem) {
+function addToCart( {id} ) {
 
     let quantityInputs = document.querySelectorAll(".quantity__input");
 
-    for(let i=0; i< cart.length; i++) {
+    for(let i=0; i < cart.length; i++) {
         
-        if(cart[i].id === newItem.id){
-            cart[i].cantidad++;
+        if(cart[i].id === id){
+            cart[i].quantity++;
             let inputValue = quantityInputs[i]
             inputValue.value++;
+            updateTotalPrice()
             return null
         }
     }
 
     cart.push(newItem);
-
-    addCart()
+    showCartItems()
 }
 
 // Renderiza los objetos en que estan en el carrito.
-function addCart() {
+function showCartItems() {
 
     renderdCart.innerHTML = '';
 
     cart.map (item => {
+        let {id, title , price, img, quantity} = item;
+
         let cartPanelRow = document.createElement("div");
         cartPanelRow.classList.add("CartItem")
 
         let newPanelContent = `<div class="cart__panel py-2 d-flex align-items-center"> 
         <div class="item d-flex justify-content-between align-items-center">
             <div class="item__picture mx-3">
-            <span class="d-none item__id">${item.id}</span>
-                <img class="item__img" src="${item.img}" alt="">
+            <span class="d-none item__id">${id}</span>
+                <img class="item__img" src="${img}" alt="">
             </div>
             <div class="item__info d-flex justify-content-between align-items-center">
-                <h5 class="item__title">${item.title}</h5>
+                <h5 class="item__title">${title}</h5>
                 <div class="item__quantity">
-                    <input class="quantity__input" type="number" value=${item.quantity}>
+                    <input class="quantity__input" type="number" value=${quantity}>
                 </div>
                 <div class="item__price-container">
-                    <span class="item__price price-font">${item.price}</span>
+                    <span class="item__price price-font">${price}</span>
                 </div>
             </div>
             <div class="btn-wrapper p-3">
@@ -183,10 +183,10 @@ function changeQuantity(e) {
     const cartItem = quantityInput.closest(".item");
     const itemId = cartItem.querySelector(".item__id").textContent;
 
-    cart.forEach(item => {
+    cart.forEach( ({id}) => {
 
-        if(item.id == itemId) {
-            // Ternary para que el valor del input no sea menor de 1.
+        if (id == itemId) {
+
             quantityInput.value < 1 ? (quantityInput.value = 1) : quantityInput.value;
             item.quantity = quantityInput.value;
 
