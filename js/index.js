@@ -1,8 +1,8 @@
 // Carga el cart del localStorage al recargar la pagina.
-window.onload = function() {
-    const storage = JSON.parse(localStorage.getItem("cart"));
-    if (storage) {
-        cart = storage;
+window.onload = () => {
+    const cartLocalStorage = JSON.parse(localStorage.getItem("cart"));
+    if (cartLocalStorage) {
+        cart = cartLocalStorage;
         addCart()
     }
 }
@@ -81,6 +81,7 @@ function addToCart(newItem) {
     let quantityInputs = document.querySelectorAll(".quantity__input");
 
     for(let i=0; i< cart.length; i++) {
+        
         if(cart[i].id === newItem.id){
             cart[i].cantidad++;
             let inputValue = quantityInputs[i]
@@ -153,10 +154,13 @@ function updateTotalPrice() {
 
 // Elimina el item del carrito al clickear el delete-button y recalcula el total.
 function deleteItem(e) {
+
     let deleteBtn = e.target;
     const cartItem = deleteBtn.closest(".cart__panel");
     const itemId = cartItem.querySelector(".item__id").textContent;
+
     for(let i=0; i < cart.length; i++) {
+
         if(cart[i].id == itemId){
             cart.splice(i, 1)
         }
@@ -168,10 +172,13 @@ function deleteItem(e) {
 
 // Cambia la cantidad de camisetas al subir el numero con en el input.
 function changeQuantity(e) {
+
     let quantityInput = e.target;
     const cartItem = quantityInput.closest(".item");
     const itemId = cartItem.querySelector(".item__id").textContent;
+
     cart.forEach(item => {
+
         if(item.id == itemId) {
             // Ternary para que el valor del input no sea menor de 1.
             quantityInput.value < 1 ? (quantityInput.value = 1) : quantityInput.value;
