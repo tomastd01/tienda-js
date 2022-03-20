@@ -51,8 +51,16 @@ addButtons.forEach(addButton => {
     addButton.addEventListener("click", AddButton)
 })
 
+
 function AddButton(e) {
     
+    Swal.fire({
+        icon: 'success',
+        title: 'El producto se ha agregado al carrito.',
+        timer: 1100,
+        showConfirmButton: false,
+    })
+
     let button = e.target;
     let element = button.closest(".card");
     let elementId = element.querySelector(".card-id").textContent;
@@ -78,13 +86,13 @@ function newItem(elementId,elementTitle,elementPrice,elementImg) {
 }
 
 //Añade el objeto al carro. Si en el carro ya existe un objeto con el mismo ID, aumenta la cantidad.
-function addToCart( {id} ) {
+function addToCart( newItem ) {
 
     let quantityInputs = document.querySelectorAll(".quantity__input");
 
     for(let i=0; i < cart.length; i++) {
         
-        if(cart[i].id === id){
+        if(cart[i].id === newItem.id){
             cart[i].quantity++;
             let inputValue = quantityInputs[i]
             inputValue.value++;
@@ -102,8 +110,7 @@ function showCartItems() {
 
     renderdCart.innerHTML = '';
 
-    cart.map (item => {
-        let {id, title , price, img, quantity} = item;
+    cart.map (({id, title , price, img, quantity}) => {
 
         let cartPanelRow = document.createElement("div");
         cartPanelRow.classList.add("CartItem")
@@ -135,6 +142,15 @@ function showCartItems() {
 
         const deleteItemButton = cartPanelRow.querySelector(".item__delete-btn");
         deleteItemButton.addEventListener("click", deleteItem);
+
+        deleteItemButton.addEventListener("click", () => {
+            Swal.fire({
+                title: "El producto se ha eliminado del carrito",
+                icon: "success",
+                showConfirmButton: false,
+                timer: 1100,
+            })
+        });
 
         const quantityInput = cartPanelRow.querySelector(".quantity__input");
         quantityInput.addEventListener("change", changeQuantity);
@@ -183,9 +199,9 @@ function changeQuantity(e) {
     const cartItem = quantityInput.closest(".item");
     const itemId = cartItem.querySelector(".item__id").textContent;
 
-    cart.forEach( ({id}) => {
+    cart.forEach( (item) => {
 
-        if (id == itemId) {
+        if (item.id == itemId) {
 
             quantityInput.value < 1 ? (quantityInput.value = 1) : quantityInput.value;
             item.quantity = quantityInput.value;
@@ -198,4 +214,42 @@ function changeQuantity(e) {
 
 function saveLocalStorage() {
     localStorage.setItem("cart",JSON.stringify(cart))
+}
+
+const buyButton = document.querySelector(".buy-btn");
+buyButton.addEventListener("click", () => {
+    
+    Swal.fire({
+
+        title: "¿Deseas finalizar tu compra?",
+        icon: "question",
+        confirmButtonText: "Si, finalizar compra.",
+        showCancelButton: true,
+        cancelButtonText: "No, no quiero comprar",
+
+    }).then(result => {
+
+        if (result.isConfirmed) {
+
+            Swal.fire({
+                title: "Gracias por tu compra, master!",
+                icon: "success",
+            })
+            buyCart()
+
+        } else if (!result.isConfirmed) {
+
+            Swal.fire ({
+                title: "La compra fue cancelada.",
+                icon: "error",
+                showConfirmButton: false,
+                timer: 1200
+            })
+        }
+    }) 
+})
+
+function buyCart () {
+    cart = []
+    showCartItems()
 }
