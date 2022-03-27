@@ -1,3 +1,8 @@
+const renderdCart = document.querySelector(".cart");
+const addButtons = document.querySelectorAll(".add-btn");
+const buyButton = document.querySelector(".buy-btn");
+const newCard = document.querySelector("#contenedor");
+
 // Carga el cart del localStorage al recargar la pagina.
 let cart;
 window.onload = () => {
@@ -14,43 +19,28 @@ class Shirt {
     }
 }
 
-let products = []
-products.push(new Shirt(1, "Boca Juniors Titular 21/22", 10999, "./images/boca.jpg"));
-products.push(new Shirt(2, "Boca Juniors Visitante 21/22", 9999, "./images/boca2.jpg"));
-products.push(new Shirt(3, "River Plate Titular 21/22", 10999, "./images/river.webp"));
-products.push(new Shirt(4, "River Plate Visitante 21/22", 10999, "./images/river2.jpg"));
-products.push(new Shirt(5, "Argentina Titular 2021", 10999, "./images/argentina1.jpg"))
-products.push(new Shirt(6, "Argentina Visitante 2021", 9999, "./images/argentina2.jpg"));
-
-function showShirtItem (products) {
-
-    let newCard = document.querySelector("#contenedor");
-
-    products.forEach(product => {
-        const {id, name, img, price} = product;
-        newCard.innerHTML += `<div class="col">
-            <div class="card radius-0 border-0" style="width: 18rem;">
-                <img src="${img}" class="card-img-top radius-0" alt="...">
-                <div class="card-body">
-                    <h5 class="card-text card-precio">${price}</h5>
-                    <p class="card-title">${name}</p>
-                    <span class="d-none card-id">${id}</span>
-                    <button href="#" class="btn btn-outline-primary add-btn radius-0">Agregar al carrito</button>
+fetch('./js/items.json')
+    .then( (res) => res.json() )
+    .then( (products) => {
+        products.forEach(product => {
+            const {id, name, img, price} = product;
+            newCard.innerHTML += `<div class="col">
+                <div class="card radius-0 border-0" style="width: 18rem;">
+                    <img src="${img}" class="card-img-top radius-0" alt="...">
+                    <div class="card-body">
+                        <h5 class="card-text card-precio">${price}</h5>
+                        <p class="card-title">${name}</p>
+                        <span class="d-none card-id">${id}</span>
+                        <button href="#" class="btn btn-outline-primary add-btn radius-0">Agregar al carrito</button>
+                    </div>
                 </div>
-            </div>
-        </div>`
+            </div>`
+        })
     })
-}
 
-showShirtItem(products);
-
-let renderdCart = document.querySelector(".cart");
-
-const addButtons = document.querySelectorAll(".add-btn");
 addButtons.forEach(addButton => {
     addButton.addEventListener("click", AddButton)
 })
-
 
 function AddButton(e) {
     
@@ -216,7 +206,7 @@ function saveLocalStorage() {
     localStorage.setItem("cart",JSON.stringify(cart))
 }
 
-const buyButton = document.querySelector(".buy-btn");
+
 buyButton.addEventListener("click", () => {
     
     Swal.fire({
