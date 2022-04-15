@@ -1,8 +1,8 @@
 [
-    {"id": 1, "name": "Boca Juniors Titular 21/22", "price": 10999, "img": "./images/boca.jpg"},
-    {"id": 2, "name": "Boca Juniors Visitante 21/22", "price": 9999, "img": "./images/boca2.jpg"},
-    {"id": 3, "name": "River Plate Titular 21/22", "price": 10999, "img": "./images/river.webp"},
-    {"id": 4, "name": "River Plate Visitante 21/22", "price": 10999, "img": "./images/river2.jpg"},
-    {"id": 5, "name": "Argentina Titular 2021", "price": 10999, "img": "./images/argentina1.jpg"},
-    {"id": 6, "name": "Argentina Visitante 2021", "price": 9999, "img": "./images/argentina2.jpg"}
+    {"id": 1, "name": "Boca Juniors Titular", "price": 10999, "img": "./images/boca.jpg"},
+    {"id": 2, "name": "Boca Juniors Visitante", "price": 9999, "img": "./images/boca2.jpg"},
+    {"id": 3, "name": "River Plate Titular", "price": 10999, "img": "./images/river.webp"},
+    {"id": 4, "name": "River Plate Visitante", "price": 10999, "img": "./images/river2.jpg"},
+    {"id": 5, "name": "Argentina Titular", "price": 10999, "img": "./images/argentina1.jpg"},
+    {"id": 6, "name": "Argentina Visitante", "price": 9999, "img": "./images/argentina2.jpg"}
 ]

@@ -4,18 +4,36 @@
     box-sizing: border-box;
 }
 
-.title__container {
-    height: 100px;
-    width: 100%;
-    background-color: #000824;
+body {
+    font-family: 'Nunito', sans-serif;
 }
 
-.h1 {
-    color: white;
-    text-transform: uppercase;
-    font-weight: 900;
-    font-size: 3.5em !important;
+.logo {
+    width: 120px;
 }
+
+.social__item {
+    font-size: 28px;
+    margin: 10px;
+    color: black;
+    list-style: none;
+}
+
+.social__link {
+    text-decoration: none;
+}
+
+i {
+    color: black;
+}
+
+i:hover {
+    color: #29ABE2;
+}
+
+
+
+/* Carts n shopCart */
 
 .item {
     width: 100%;
@@ -47,10 +65,11 @@
 .item__delete-btn {
     width: 25px;
     height: 25px;
-    color: white;
+    color: red;
     border-radius: 0px;
     border: 1px solid;
     background-color: white;
+    transition: 200ms ease;
 }
 
 .cart__total {
@@ -59,10 +78,12 @@
 
 .buy-btn {
     font-size: 1em;
+    color: #295ae2;
     background-color: white;
     padding: 10px 60px;
     border-radius: 0px;
-    border: none;
+    border: 1px solid;
+    transition: 200ms ease;
 }
 
 .radius-0 {

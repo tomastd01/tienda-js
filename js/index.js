@@ -24,7 +24,7 @@ fetch('./js/items.json')
     .then( (products) => {
         products.forEach(product => {
             const {id, name, img, price} = product;
-            newCard.innerHTML += `<div class="col">
+            newCard.innerHTML += `<div class="col col-sm-6 col-md-4 col-lg-3 d-flex justify-content-center">
                 <div class="card radius-0 border-0" style="width: 18rem;">
                     <img src="${img}" class="card-img-top radius-0" alt="...">
                     <div class="card-body">
@@ -35,6 +35,10 @@ fetch('./js/items.json')
                     </div>
                 </div>
             </div>`
+        })
+        let addButtons2 = document.querySelectorAll(".add-btn");
+        addButtons2.forEach(addButton => {
+            addButton.addEventListener("click", AddButton)
         })
     })
 
